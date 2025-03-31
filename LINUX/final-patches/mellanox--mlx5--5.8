@@ -176,10 +176,10 @@ index e1cd67b..d9f90b6 100644
  
  	netdev_err(sq->netdev,
 diff --git a/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 03f309e..37a8368 100644
+index 7566bf6..c2b8331 100644
 --- a/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
 +++ b/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -88,8 +88,22 @@
+@@ -92,8 +92,22 @@
  #include "fpga/ipsec.h"
  #include "compat.h"
  
@@ -202,7 +202,7 @@ index 03f309e..37a8368 100644
  	bool striding_rq_umr, inline_umr;
  	u16 max_wqe_sz_cap;
  
-@@ -1239,6 +1253,12 @@ int mlx5e_wait_for_min_rx_wqes(struct mlx5e_rq *rq, int wait_time)
+@@ -1247,6 +1261,12 @@ int mlx5e_wait_for_min_rx_wqes(struct mlx5e_rq *rq, int wait_time)
  {
  	unsigned long exp_time = jiffies + msecs_to_jiffies(wait_time);
  
@@ -215,7 +215,7 @@ index 03f309e..37a8368 100644
  	u16 min_wqes = mlx5_min_rx_wqes(rq->wq_type, mlx5e_rqwq_get_size(rq));
  
  	do {
-@@ -1321,6 +1341,10 @@ void mlx5e_free_rx_descs(struct mlx5e_rq *rq)
+@@ -1329,6 +1349,10 @@ void mlx5e_free_rx_descs(struct mlx5e_rq *rq)
  
  		while (!mlx5_wq_cyc_is_empty(wq)) {
  			wqe_ix = mlx5_wq_cyc_get_tail(wq);
@@ -226,7 +226,7 @@ index 03f309e..37a8368 100644
  			rq->dealloc_wqe(rq, wqe_ix);
  			mlx5_wq_cyc_pop(wq);
  		}
-@@ -1458,6 +1482,10 @@ int mlx5e_open_rq(struct mlx5e_priv *priv, struct mlx5e_params *params,
+@@ -1466,6 +1490,10 @@ int mlx5e_open_rq(struct mlx5e_priv *priv, struct mlx5e_params *params,
  	if (MLX5E_GET_PFLAG(params, MLX5E_PFLAG_SKB_XMIT_MORE))
  		__set_bit(MLX5E_RQ_STATE_SKB_XMIT_MORE, &rq->state);
  
@@ -237,7 +237,7 @@ index 03f309e..37a8368 100644
  	return 0;
  
  err_destroy_rq:
-@@ -1471,6 +1499,9 @@ err_dealloc_rq:
+@@ -1479,6 +1507,9 @@ err_dealloc_rq:
  
  void mlx5e_activate_rq(struct mlx5e_rq *rq)
  {
@@ -247,7 +247,7 @@ index 03f309e..37a8368 100644
  	set_bit(MLX5E_RQ_STATE_ENABLED, &rq->state);
  }
  
-@@ -1765,6 +1796,11 @@ static int mlx5e_alloc_txqsq(struct mlx5e_channel *c,
+@@ -1773,6 +1804,11 @@ static int mlx5e_alloc_txqsq(struct mlx5e_channel *c,
  	INIT_WORK(&sq->dim_obj.dim.work, mlx5e_tx_dim_work);
  	sq->dim_obj.dim.mode = params->tx_cq_moderation.cq_period_mode;
  
@@ -259,7 +259,7 @@ index 03f309e..37a8368 100644
  	return 0;
  
  err_sq_wq_destroy:
-@@ -1978,6 +2014,9 @@ void mlx5e_stop_txqsq(struct mlx5e_txqsq *sq)
+@@ -1986,6 +2022,9 @@ void mlx5e_stop_txqsq(struct mlx5e_txqsq *sq)
  	mlx5e_tx_disable_queue(sq->txq);
  
  	/* last doorbell out, godspeed .. */
@@ -269,7 +269,7 @@ index 03f309e..37a8368 100644
  	if (mlx5e_wqc_has_room_for(wq, sq->cc, sq->pc, 1)) {
  		u16 pi = mlx5_wq_cyc_ctr2ix(wq, sq->pc);
  		struct mlx5e_tx_wqe *nop;
-@@ -1998,6 +2037,12 @@ void mlx5e_close_txqsq(struct mlx5e_txqsq *sq)
+@@ -2006,6 +2045,12 @@ void mlx5e_close_txqsq(struct mlx5e_txqsq *sq)
  
  	cancel_work_sync(&sq->dim_obj.dim.work);
  	cancel_work_sync(&sq->recover_work);
@@ -282,7 +282,7 @@ index 03f309e..37a8368 100644
  	mlx5e_destroy_sq(mdev, sq->sqn);
  	if (sq->rate_limit) {
  		rl.rate = sq->rate_limit;
-@@ -3569,6 +3614,11 @@ int mlx5e_open_locked(struct net_device *netdev)
+@@ -3577,6 +3622,11 @@ int mlx5e_open_locked(struct net_device *netdev)
  		priv->profile->update_carrier(priv);
  
  	mlx5e_queue_update_stats(priv);
@@ -294,7 +294,7 @@ index 03f309e..37a8368 100644
  	return 0;
  
  err_clear_state_opened_flag:
-@@ -3604,6 +3654,10 @@ int mlx5e_close_locked(struct net_device *netdev)
+@@ -3612,6 +3662,10 @@ int mlx5e_close_locked(struct net_device *netdev)
  	mlx5e_apply_traps(priv, false);
  	clear_bit(MLX5E_STATE_OPENED, &priv->state);
  
@@ -305,7 +305,7 @@ index 03f309e..37a8368 100644
  	netif_carrier_off(priv->netdev);
  	if (!mlx5e_is_uplink_rep(priv) && !mlx5e_is_vport_rep(priv))
  		mlx5e_destroy_debugfs(priv);
-@@ -7279,6 +7333,10 @@ void mlx5e_destroy_netdev(struct mlx5e_priv *priv)
+@@ -7287,6 +7341,10 @@ void mlx5e_destroy_netdev(struct mlx5e_priv *priv)
  {
  	struct net_device *netdev = priv->netdev;
  
@@ -316,10 +316,10 @@ index 03f309e..37a8368 100644
  	mlx5e_priv_cleanup(priv);
  	free_netdev(netdev);
  }
-@@ -7391,6 +7449,11 @@ static int mlx5e_probe(struct auxiliary_device *adev,
+@@ -7402,6 +7460,11 @@ static int mlx5e_probe(struct auxiliary_device *adev,
  
  	mlx5e_dcbnl_init_app(priv);
- 	mlx5_uplink_netdev_set(mdev, netdev);
+ 	mlx5_core_uplink_netdev_set(mdev, netdev);
 +
 +#ifdef DEV_NETMAP
 +       mlx5e_netmap_attach(priv);
@@ -329,10 +329,10 @@ index 03f309e..37a8368 100644
  
  err_unregister_netdev:
 diff --git a/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 7ac3a9d..c077d87 100644
+index 139051c..ca80f70 100644
 --- a/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
 +++ b/mlx5/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -94,6 +94,14 @@ const struct mlx5e_rx_handlers mlx5e_rx_handlers_nic = {
+@@ -98,6 +98,14 @@ const struct mlx5e_rx_handlers mlx5e_rx_handlers_nic = {
  #endif
  };
  
@@ -347,7 +347,7 @@ index 7ac3a9d..c077d87 100644
  static inline bool mlx5e_rx_hw_stamp(struct hwtstamp_config *config)
  {
  	return config->rx_filter == HWTSTAMP_FILTER_ALL;
-@@ -228,7 +236,7 @@ static inline u32 mlx5e_decompress_cqes_cont(struct mlx5e_rq *rq,
+@@ -232,7 +240,7 @@ static inline u32 mlx5e_decompress_cqes_cont(struct mlx5e_rq *rq,
  	return cqe_count;
  }
  
@@ -356,7 +356,7 @@ index 7ac3a9d..c077d87 100644
  					      struct mlx5_cqwq *wq,
  					      int budget_rem)
  {
-@@ -2598,6 +2606,13 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
+@@ -2602,6 +2610,13 @@ int mlx5e_poll_rx_cq(struct mlx5e_cq *cq, int budget)
  		priv = netdev_priv(rq->netdev);
  #endif
  
