@@ -119,7 +119,7 @@ endif
 # Mellanox/Nvidia now have really poor packages. For example: MLNX_EN_SRC-debian-23.10-4.0.9.1.tgz contains mlnx-en_23.10.4.0.9.0.ga6a375c.orig.tar.gz
 define mellanox_driver
 $(1)@fetch	:= test -e @SRCDIR@/ext-drivers/MLNX_EN_SRC-debian-$(2).tgz || wget https://content.mellanox.com/ofed/MLNX_EN-$(2)/MLNX_EN_SRC-debian-$(2).tgz -P @SRCDIR@/ext-drivers
-$(1)@src	:= tar xf @SRCDIR@/ext-drivers/MLNX_EN_SRC-debian-$(2).tgz&& tar xf MLNX_EN_SRC-$(2)/SOURCES/mlnx-en_23.10.4.0.9.0.ga6a375c.orig.tar.gz && ln -s mlnx-en-23.10.4.0.9.0.ga6a375c $(1)
+$(1)@src	:= tar xf @SRCDIR@/ext-drivers/MLNX_EN_SRC-debian-$(2).tgz&& tar xf MLNX_EN_SRC-$(2)/mlnx-en_24.10.2.1.8.0.g57699cd.orig.tar.gz && ln -s mlnx-en_24.10.2.1.8.0.g57699cd $(1)
 $(1)@patch	:= patches/mellanox--$(1)--$($(1)@pv)
 $(1)@prepare	:= @SRCDIR@/mlx5-prepare.sh @KSRC@
 $(1)@build	:= make -C $(1) NETMAP_DRIVER_SUFFIX=@DRVSUFFIX@ EXTRA_CFLAGS="$$($(1)@cflags) $(EXTRA_CFLAGS)"
@@ -129,7 +129,7 @@ $(1)@distclean  := rm -rf mlnx-en-$($(1)@pv) mlnx-en-$(2)
 $(1)@force	:= 1
 endef
 
-$(eval $(call default,mlx5,23.10-4.0.9.1))
+$(eval $(call default,mlx5,24.10-2.1.8.0))
 mlx5@pv		= $(firstword $(subst -, ,$(mlx5@v)))
 mlx5@conf	= CONFIG_MLX5_CORE_EN
 mlx5@cflags	= -Wframe-larger-than=2000
